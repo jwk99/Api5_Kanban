@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Kanban</title>
+    <style>
+        body {font-family:sans-serif}
+        .board {display:flex; gap:20px}
+        .col {border:1px solid #000; padding:10px; width:200px;}
+        .task{border:1px solid #999; margin:5px 0; padding:5px; display:flex; justify-content:space-between}
+    </style>
+</head>
+<body>
+    <h2>Kanban</h2>
+    <div class="board" id="board"></div>
+    <script>
+        async function load() {
+            const r = await fetch('/api/board');
+            const d = await r.json();
+            const board = document.getElementById('board');
+            board.innerHTML = "";
+            d.cols.forEach(c => {
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.innerHTML = `<h3>${c.name}</h3>`;
+                d.tasks.filter(t => t.colId === c.id)
+                    .forEach(t => {
+                        const el = document.createElement('div');
+                        el.className = 'task';
+                        el.innerHTML = t.title;
+                        const btn = document.createElement('button');
+                        btn.textContent = "=>";
+                        btn.onclick = async () => {
+                            await fetch(`/api/tasks/${t.id}/move`, {
+                                method: 'POST',
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ colId: c.id + 1, ord: 999 })
+                            });
+                            load();
+                        };
+                        el.appendChild(btn);
+                        col.appendChild(el);
+                    });
+                board.appendChild(col);
+            });
+        }
+        load();
+    </script>
+</body>
+</html>

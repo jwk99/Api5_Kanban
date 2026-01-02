@@ -1,0 +1,56 @@
+@baseUrl = https://localhost:7084
+### Board
+### Get board
+GET {{baseUrl}}/api/board
+Accept: application/json
+### Tasks
+### Create task (Todo)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+{
+  "title": "Nowe zadanie",
+  "colId": 1
+}
+### Create task (Doing)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+{
+  "title": "Zadanie w trakcie",
+  "colId": 2
+}
+### Create task - column 404
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+{
+  "title": "Z³e zadanie",
+  "colId": 999
+}
+### Move task
+### Move task to Doing
+POST {{baseUrl}}/api/tasks/6/move
+Content-Type: application/json
+{
+  "colId": 2,
+  "ord": 1
+}
+### Move task to Done
+POST {{baseUrl}}/api/tasks/6/move
+Content-Type: application/json
+{
+  "colId": 3,
+  "ord": 999
+}
+### Move task - task 404
+POST {{baseUrl}}/api/tasks/999/move
+Content-Type: application/json
+{
+  "colId": 2,
+  "ord": 1
+}
+### Move task - column 404
+POST {{baseUrl}}/api/tasks/1/move
+Content-Type: application/json
+{
+  "colId": 999,
+  "ord": 1
+}
